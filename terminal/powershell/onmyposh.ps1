@@ -3,7 +3,7 @@
 
 winget install JanDeDobbeleer.OhMyPosh -s winget
 
-oh-my-posh font install --user
+oh-my-posh font install
 # Meslo
 
 echo $PROFILE
@@ -12,7 +12,7 @@ echo $PROFILE
 # Set-ExecutionPolicy RemoteSigned
 # Get-ExecutionPolicy
 
-Install-Module -Name posh-git -Scope CurrentUser -Y
+Install-Module -Name posh-git -Scope CurrentUser
 Install-Module PSReadLine -Force
 
 $posh_config=@"
