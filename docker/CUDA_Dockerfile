@@ -1,0 +1,36 @@
+# cuda 12.3, torch 2.2, python3.10
+# https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch
+FROM nvcr.io/nvidia/pytorch:24.01-py3
+
+# Set the environment variable DEBIAN_FRONTEND to noninteractive for a non-interactive
+ENV DEBIAN_FRONTEND=noninteractive
+
+# If you need to install files using apt, you must add "chmod 777 /tmp" to prevent any errors.
+RUN chmod 777 /tmp
+
+# Execute the following sed command to replace/etc/opt/sources.list
+RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
+    && apt-get clean
+
+# http service environment install any needed packages 
+RUN pip config set global.index-url  https://pypi.tuna.tsinghua.edu.cn/simple
+
+# Set the time zone to Shanghai. ref： https://blog.csdn.net/suo082407128/article/details/130606159
+ENV TZ=Asia/Shanghai 
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && \ 
+    echo $TZ > /etc/timezone  && \ 
+    apt update && \ 
+    apt install -y --no-install-recommends tzdata &&\
+    rm -rf /var/lib/apt/lists/*
+
+ENV AM_I_DOCKER=True
+ENV BUILD_WITH_CUDA=True
+ENV MAX_JOBS=32
+
+RUN python -m pip install --upgrade pip
+
+# Remove unnecessary packages
+# /opt/hpcx/ompi/lib/libmpi.so.40: undefined symbol: opal_hwloc201_hwloc_get_type_depth
+# https://blog.csdn.net/weixin_43278082/article/details/134198903
+RUN apt update && apt autoremove -y hwloc-nox libhwloc-dev libhwloc-plugins &&\
+    rm -rf /var/lib/apt/lists/*
