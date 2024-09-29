@@ -4,6 +4,7 @@ project: init
 
 resources:
   slots_per_trial: 1  # 显卡数量
+  priority: 42
 entrypoint: python3 test.py  # 任务命令
 
 # 挂载
@@ -20,7 +21,7 @@ searcher:
    # max_length is ignored if the training script ignores it.
    max_length: 1
 
-max_restarts: 1 # 任务运行失败会重跑
+max_restarts: 3 # 任务运行失败会重跑
 
 environment:
   image: determinedai/environments:cuda-11.3-pytorch-1.12-tf-2.11-gpu-622d512  # 镜像

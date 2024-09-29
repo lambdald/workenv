@@ -1,0 +1,8 @@
+port: 8080
+image: cuda:12.4
+environment_variables:
+- USERNAME=lambdald
+- USEREMAIL=lambdald@163.com
+
+scheduler:
+  type: priority
