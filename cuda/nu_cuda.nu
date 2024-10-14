@@ -1,8 +1,14 @@
 
 # let cuda_paths = 
 # let local_cuda_paths = 
+let cuda_paths = []
+if $env.OS == "Windows_NT" {
+  let cuda_paths = (ls "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\*")
+}
+else if $env.OS == "Linux" {
+  let cuda_paths = (ls /usr/local/cuda-* | sort-by name | get name) ++ (ls ~/devlibs/cuda-* | sort-by name | get name)
+}
 
-let cuda_paths = (ls /usr/local/cuda-* | sort-by name | get name) ++ (ls ~/devlibs/cuda-* | sort-by name | get name)
 print "CUDA Versions:"
 print $cuda_paths
 

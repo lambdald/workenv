@@ -44,8 +44,6 @@ fc-cache -f -v
 #! Install starship
 echo "Configure nushell"
 echo "Config conda in nushell"
-mkdir -p ~/.config/nushell/scripts
-cp $workenv/conda/nu_conda.nu ~/.config/nushell/scripts/conda.nu
 
 
 #! Configure nushell
