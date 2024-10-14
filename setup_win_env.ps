@@ -1,0 +1,62 @@
+###
+ # @Author: lidong lambdald@163.com
+ # @Date: 2024-10-14 12:36:15
+ # @LastEditors: lidong lambdald@163.com
+ # @LastEditTime: 2024-10-14 14:55:47
+ # @Description: 
+### 
+
+$env:HTTPS_PROXY="http://127.0.0.1:9495"
+$env:HTTP_PROXY="http://127.0.0.1:9495"
+
+# 设置工作环境
+$workenv = (Get-Location).Path
+
+# 进入当前目录
+Set-Location -Path $PWD
+
+# 输出工作环境
+Write-Output "workenv: $workenv"
+
+# 设置工作空间
+$workspace = "$HOME\workenv"
+
+# 创建工作目录并进入
+New-Item -ItemType Directory -Force -Path $workspace | Out-Null
+Set-Location -Path $workspace
+
+# 安装conda
+Write-Output "*** Install conda ***"
+if (-not (Test-Path "$HOME\miniconda3\bin\conda.exe")) {
+    Write-Output "Download Miniconda"
+    Invoke-WebRequest -Uri "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" -OutFile "Miniconda3-latest-Linux-x86_64.sh"
+    Write-Output "Install Miniconda"
+    & .\Miniconda3-latest-Linux-x86_64.sh
+} else {
+    Write-Output "Miniconda is already installed"
+}
+conda init powershell
+
+# 安装conda包
+Write-Output "Install conda packages"
+conda install nushell starship -c conda-forge -y
+
+# 安装nerd字体
+Write-Output "Install nerd font"
+# 从 https://www.nerdfonts.com/font-downloads 下载
+if (-not (Test-Path "Hack-v3.003-ttf.zip")) {
+    Invoke-WebRequest -Uri "https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip" -OutFile "Hack-v3.003-ttf.zip"
+}
+
+Expand-Archive -Path "Hack-v3.003-ttf.zip" -DestinationPath "Hack-v3.003-ttf"
+Get-ChildItem -Path "Hack-v3.003-ttf" -Recurse | Where-Object { $_.Extension -eq ".ttf" } | ForEach-Object { Move-Item -Path $_.FullName -Destination "$HOME\.local\share\fonts" }
+fc-cache -f -v
+
+# 安装starship
+Write-Output "Configure nushell"
+Write-Output "Config conda in nushell"
+New-Item -ItemType Directory -Force -Path "$HOME\.config\nushell\scripts" | Out-Null
+Copy-Item -Path "$workenv\conda\nu_conda.nu" -Destination "$HOME\.config\nushell\scripts\conda.nu"
+
+# 配置nushell
+Invoke-Expression -Command "nu $workenv\setup_nu_env.nu"
