@@ -2,7 +2,7 @@
  # @Author: lidong lambdald@163.com
  # @Date: 2024-10-14 12:36:15
  # @LastEditors: lidong lambdald@163.com
- # @LastEditTime: 2024-10-14 14:55:47
+ # @LastEditTime: 2024-10-15 11:24:22
  # @Description: 
 ### 
 
@@ -52,11 +52,6 @@ Expand-Archive -Path "Hack-v3.003-ttf.zip" -DestinationPath "Hack-v3.003-ttf"
 Get-ChildItem -Path "Hack-v3.003-ttf" -Recurse | Where-Object { $_.Extension -eq ".ttf" } | ForEach-Object { Move-Item -Path $_.FullName -Destination "$HOME\.local\share\fonts" }
 fc-cache -f -v
 
-# 安装starship
-Write-Output "Configure nushell"
-Write-Output "Config conda in nushell"
-New-Item -ItemType Directory -Force -Path "$HOME\.config\nushell\scripts" | Out-Null
-Copy-Item -Path "$workenv\conda\nu_conda.nu" -Destination "$HOME\.config\nushell\scripts\conda.nu"
 
 # 配置nushell
 Invoke-Expression -Command "nu $workenv\setup_nu_env.nu"

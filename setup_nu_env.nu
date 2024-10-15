@@ -1,7 +1,10 @@
 
 # starship
+
+let starship_path = (which starship).path | get 0
+
 "\n#! starship" | save --append $nu.env-path
-"\nmkdir ~/.cache/starship\nstarship init nu | save -f ~/.cache/starship/init.nu\n" | save --append $nu.env-path
+$"\nmkdir ~/.cache/starship\n($starship_path) init nu | save -f ~/.cache/starship/init.nu\n" | save --append $nu.env-path
 "\n#! starship" | save --append $nu.config-path 
 "\nuse ~/.cache/starship/init.nu\n" | save --append $nu.config-path 
 

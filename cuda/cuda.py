@@ -1,8 +1,8 @@
 """
 Author: Lambdald lambdald@163.com
 Date: 2024-10-14 22:12:58
-LastEditors: Lambdald lambdald@163.com
-LastEditTime: 2024-10-14 22:42:41
+LastEditors: lidong lambdald@163.com
+LastEditTime: 2024-10-15 10:51:38
 Description: 
 """
 import os
@@ -50,33 +50,51 @@ def write_nushell_cuda_config(cuda_path: Path, config_path: Path):
     cuda_bin_path = cuda_path / 'bin'
     cuda_lib_path = cuda_path / 'lib64'
 
-    with open(config_path, 'a') as f:
+    with open(config_path, 'w') as f:
         f.write('\n')
 
-        f.write(f'\n$env.CUDA_PATH={cuda_path}\n')
-        f.write(f"\n$env.CUDA_BIN_PATH={cuda_bin_path}\n")
-        f.write(f"\n$env.CUDA_LIB_PATH={cuda_lib_path}\n")
+        s = """#! cuda config
+export-env {
+"""
+        s += f"""
+  $env.CUDA_PATH = '{cuda_path}'
 
-        f.write(f"""$env.PATH = (
-            $env.PATH
-            | split row (char esep)
-            | append $env.CUDA_BIN_PATH
-            | uniq # filter so the paths are unique
-        )\n""")
-        f.write(f"""$env.LD_LIBRARY_PATH = (
-        $env.LD_LIBRARY_PATH
-        | split row (char esep)
-        | append $env.CUDA_LIB_PATH
-        | uniq # filter so the paths are unique
-      )\n""")
+  $env.CUDA_BIN_PATH = '{cuda_bin_path}'
 
-# write_nushell_cuda_config(cuda_path, Path.home() / '.config' / 'nushell' / 'config.nu')
-print(os.environ)
+  $env.CUDA_LIB_PATH = '{cuda_lib_path}'
+"""
+        s += """
+
+  $env.PATH = (
+              $env.PATH
+              | split row (char esep)
+              | append $env.CUDA_BIN_PATH
+              | uniq # filter so the paths are unique
+          )
+
+  if not ('LD_LIBRARY_PATH' in $env) {
+    $env.LD_LIBRARY_PATH = []
+  }
+  $env.LD_LIBRARY_PATH = (
+          $env.LD_LIBRARY_PATH
+          | split row (char esep)
+          | append $env.CUDA_LIB_PATH
+          | uniq # filter so the paths are unique
+        )
+}
+"""
+        f.write(s)
+
 
 def main(args):
+    print(os.environ)
     cuda_paths = find_cuda_paths()
+    print(f'Find CUDA paths: {cuda_paths}')
     cuda_path = select_cuda_version(cuda_paths)
+    print(f'cuda_path: {cuda_path}')
     write_nushell_cuda_config(cuda_path, Path(args.config_path))
+    print(f'Write nushell config to {args.config_path}')
+    print('CUDA config done')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='CUDA config')
