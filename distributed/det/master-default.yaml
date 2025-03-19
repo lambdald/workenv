@@ -1,64 +1,3 @@
-port: 8080
-cluster_name: det_platform
-
-resource_manager:
-  default_aux_resource_pool: gpu1
-  default_compute_resource_pool: gpu1
-  scheduler:
-    default_priority: 42
-    fitting_policy: best
-    preemption: false
-    type: priority
-  type: agent
-
-resource_pools:
-- pool_name: gpu1
-  description: 'gpu1'
-  agent_reattach_enabled: false
-  agent_reconnect_wait: 25s
-  max_aux_containers_per_agent: 100
-  max_cpu_containers_per_agent: -1
-  scheduler:
-    type: priority
-    fitting_policy: best
-- pool_name: gpu2
-  description: 'gpu2'
-  max_aux_containers_per_agent: 100
-  max_cpu_containers_per_agent: -1
-  agent_reattach_enabled: false
-  agent_reconnect_wait: 25s
-  scheduler:
-    type: priority
-    fitting_policy: best
-
-task_container_defaults:
-  bind_mounts:
-    - container_path: /gpfs
-      host_path: /gpfs
-      propagation: rshared
-    - container_path: /share
-      host_path: /share
-      propagation: rshared
-  shm_size_bytes: 4294967296
-
-  checkpoint_gc_pod_spec: null
-  cpu_pod_spec: null
-  devices: null
-  drop_capabilities: null
-  gpu_pod_spec: null
-  kubernetes: null
-  log_policies: null
-  network_mode: bridge
-  pbs: {}
-  preemption_timeout: 3600
-  slurm: {}
-  startup_hook: ''
-  work_dir: null
-
-
-
-
-
 __internal:
   audit_logging_enabled: false
   external_sessions:
@@ -81,6 +20,7 @@ checkpoint_storage:
   save_trial_latest: 1
   storage_path: null
   type: shared_fs
+cluster_name: ''
 config_file: ''
 db:
   host: determined-db
@@ -128,9 +68,33 @@ oidc:
   idp_sso_url: ''
   provider: ''
   scim_authentication_attribute: userName
+port: 8080
 reserved_ports: null
-
-
+resource_manager:
+  client_ca: ''
+  cluster_name: default
+  default_aux_resource_pool: default
+  default_compute_resource_pool: default
+  metadata: null
+  name: ''
+  no_default_resource_pools: false
+  require_authentication: false
+  scheduler:
+    allow_heterogeneous_fits: false
+    default_priority: 42
+    fitting_policy: best
+    preemption: false
+    type: priority
+  type: agent
+resource_pools:
+- agent_reattach_enabled: false
+  agent_reconnect_wait: 25s
+  description: ''
+  max_aux_containers_per_agent: 100
+  max_cpu_containers_per_agent: -1
+  pool_name: default
+  provider: null
+  task_container_defaults: null
 retention_policy:
   log_retention_days: null
   schedule: null
@@ -180,7 +144,23 @@ security:
   token:
     default_lifespan_days: 30
     max_lifespan_days: 30
-
+task_container_defaults:
+  add_capabilities: null
+  bind_mounts: null
+  checkpoint_gc_pod_spec: null
+  cpu_pod_spec: null
+  devices: null
+  drop_capabilities: null
+  gpu_pod_spec: null
+  kubernetes: null
+  log_policies: null
+  network_mode: bridge
+  pbs: {}
+  preemption_timeout: 3600
+  shm_size_bytes: 4294967296
+  slurm: {}
+  startup_hook: ''
+  work_dir: null
 telemetry:
   cluster_id: ''
   enabled: true
@@ -194,3 +174,4 @@ ui_customization:
 webhooks:
   base_url: ''
   signing_key: 2f3a64ca5959
+

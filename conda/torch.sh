@@ -1,3 +1,10 @@
+###
+ # @Author: lidong lambdald@163.com
+ # @Date: 2024-09-19 14:00:52
+ # @LastEditors: lidong lambdald@163.com
+ # @LastEditTime: 2024-12-11 14:45:34
+ # @Description: 
+### 
 ENV_NAME=torch
 PROJECT_DIR=`pwd`
 echo project dir:${PROJECT_DIR}
@@ -16,3 +23,4 @@ $PYTHON_PATH -m pip intall ultralytics
 $PYTHON_PATH -m pip intall accelerate
 $PYTHON_PATH -m pip intall timm
 $PYTHON_PATH -m pip intall kornia
+$PYTHON_PATH -m pip install 'ray[default]'
